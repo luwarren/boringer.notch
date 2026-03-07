@@ -68,6 +68,20 @@ enum OptionKeyAction: String, CaseIterable, Identifiable, Defaults.Serializable 
     var id: String { self.rawValue }
 }
 
+struct ReminderScheduleEntry: Codable, Defaults.Serializable, Identifiable, Equatable {
+    var id: UUID = UUID()
+    /// 1...7 using Calendar.current.component(.weekday, from: date)
+    var weekday: Int
+    var startHour: Int
+    var startMinute: Int
+    var endHour: Int
+    var endMinute: Int
+}
+
+struct ReminderSchedule: Codable, Defaults.Serializable, Equatable {
+    var entries: [ReminderScheduleEntry] = []
+}
+
 extension Defaults.Keys {
     // MARK: General
     static let menubarIcon = Key<Bool>("menubarIcon", default: true)
@@ -182,6 +196,12 @@ extension Defaults.Keys {
     
     // MARK: Media Controller
     static let mediaController = Key<MediaControllerType>("mediaController", default: defaultMediaController)
+
+    // MARK: Reminders
+    static let reminderEnabled = Key<Bool>("reminderEnabled", default: false)
+    static let reminderIntervalMinutes = Key<Int>("reminderIntervalMinutes", default: 60)
+    static let reminderSchedule = Key<ReminderSchedule>("reminderSchedule", default: ReminderSchedule())
+    static let reminderDismissSeconds = Key<Double>("reminderDismissSeconds", default: 5.0)
     
     // MARK: Advanced Settings
     static let useCustomAccentColor = Key<Bool>("useCustomAccentColor", default: false)

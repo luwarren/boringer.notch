@@ -39,6 +39,10 @@ enum BrowserType {
     case safari
 }
 
+enum ReminderType {
+    case water
+}
+
 struct ExpandedItem {
     var show: Bool = false
     var type: SneakContentType = .battery

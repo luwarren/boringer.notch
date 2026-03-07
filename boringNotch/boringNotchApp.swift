@@ -435,7 +435,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         previousScreens = NSScreen.screens
 
-        ReminderManager.shared.start()
+//        ReminderManager.shared.start()
     }
 
     func playWelcomeSound() {

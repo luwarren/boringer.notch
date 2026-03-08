@@ -1,3 +1,10 @@
+//
+//  ReminderManager.swift
+//  boringNotch
+//
+//  Created by Warren Lu on 08/03/2026.
+//
+
 import Foundation
 import Defaults
 import Combine

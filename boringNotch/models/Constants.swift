@@ -3,6 +3,7 @@
 //  boringNotch
 //
 //  Created by Richard Kunkli on 2024. 10. 17..
+//  Modified by Warren Lu on 08/03/2026.
 //
 
 import SwiftUI
@@ -202,6 +203,8 @@ extension Defaults.Keys {
     static let reminderIntervalMinutes = Key<Int>("reminderIntervalMinutes", default: 60)
     static let reminderSchedule = Key<ReminderSchedule>("reminderSchedule", default: ReminderSchedule())
     static let reminderDismissSeconds = Key<Double>("reminderDismissSeconds", default: 5.0)
+    static let reminderPersonName = Key<String>("reminderPersonName", default: "")
+
     
     // MARK: Advanced Settings
     static let useCustomAccentColor = Key<Bool>("useCustomAccentColor", default: false)

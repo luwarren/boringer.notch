@@ -4,6 +4,7 @@
 //
 //  Created by Harsh Vardhan Goswami  on 02/08/24
 //  Modified by Richard Kunkli on 24/08/2024.
+//  Modified by Warren Lu on 08/03/2026.
 //
 
 import AVFoundation
@@ -256,10 +257,10 @@ struct ContentView: View {
                     .padding(.top, 40)
                     Spacer()
                 } else {
-                    if reminderManager.showReminder && Defaults[.reminderEnabled] && vm.notchState == .closed {
+                    if reminderManager.showReminder && Defaults[.reminderEnabled] && vm.notchState == .closed && Defaults[.sneakPeekStyles] == .inline {
                         ReminderLiveActivity()
                             .frame(height: vm.effectiveClosedNotchHeight, alignment: .center)
-                      } else if coordinator.expandingView.type == .battery && coordinator.expandingView.show
+                    } else if coordinator.expandingView.type == .battery && coordinator.expandingView.show
                         && vm.notchState == .closed && Defaults[.showPowerStatusNotifications]
                     {
                         HStack(spacing: 0) {
@@ -337,6 +338,10 @@ struct ContentView: View {
                               }
                           }
                       }
+                    if reminderManager.showReminder && Defaults[.reminderEnabled] && vm.notchState == .closed && Defaults[.sneakPeekStyles] == .standard {
+                        ReminderLiveActivity()
+                            .padding(.bottom, 10)
+                    }
                   }
               }
               .conditionalModifier((coordinator.sneakPeek.show && (coordinator.sneakPeek.type == .music) && vm.notchState == .closed && !vm.hideOnClosed && Defaults[.sneakPeekStyles] == .standard) || (coordinator.sneakPeek.show && (coordinator.sneakPeek.type != .music) && (vm.notchState == .closed))) { view in

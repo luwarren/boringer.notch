@@ -1,3 +1,10 @@
+//
+//  ReminderSettingsView.swift
+//  boringNotch
+//
+//  Created by Warren Lu on 08/03/2026.
+//
+
 import Defaults
 import SwiftUI
 
@@ -6,6 +13,8 @@ struct ReminderSettingsView: View {
     @Default(.reminderIntervalMinutes) private var intervalMinutes
     @Default(.reminderSchedule) private var schedule
     @Default(.reminderDismissSeconds) private var dismissSeconds
+    @Default(.reminderPersonName) var reminderPersonName
+
 
     private let availableIntervals: [Int] = [1, 10, 15, 20, 30, 60]
 
@@ -26,7 +35,7 @@ struct ReminderSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Enable water reminders", isOn: $enabled)
+                Toggle("Water reminders", isOn: $enabled)
 
                 Picker("Interval", selection: sanitisedIntervalBinding) {
                     ForEach(availableIntervals, id: \.self) { value in
@@ -35,21 +44,28 @@ struct ReminderSettingsView: View {
                 }
                 .disabled(!enabled)
 
-                HStack {
-                    Text("Dismiss after")
-                    Spacer()
-                    Slider(
-                        value: Binding(
-                            get: { dismissSeconds },
-                            set: { dismissSeconds = max(3.0, min(10.0, $0)) }
-                        ),
-                        in: 3...10,
-                        step: 1
-                    )
-                    Text("\(Int(dismissSeconds))s")
-                        .foregroundStyle(.secondary)
+                Stepper(value: Binding(
+                    get: { dismissSeconds },
+                    set: { dismissSeconds = max(3.0, min(10.0, $0)) }
+                ), in: 3...10, step: 1) {
+                    HStack {
+                        Text("Dismiss after")
+                        Spacer()
+                        Text("\(Int(dismissSeconds)) seconds")
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 .disabled(!enabled)
+                LabeledContent {
+                    TextField("", text: $reminderPersonName)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 200)
+                } label: {
+                    Text("Name (optional)")
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+
             } header: {
                 Text("General")
             }

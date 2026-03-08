@@ -55,20 +55,26 @@ final class ReminderManager: ObservableObject {
         timer?.invalidate()
         timer = nil
         cancelAutoDismiss()
-        showReminder = false
+        withAnimation(.smooth) {
+            showReminder = false
+        }
         countdown = 0
         nextTrigger = nil
     }
 
     func snooze() {
         cancelAutoDismiss()
-        showReminder = false
+        withAnimation(.smooth) {
+            showReminder = false
+        }
         recalculateNextTrigger(fromNow: true)
     }
 
     func dismiss() {
         cancelAutoDismiss()
-        showReminder = false
+        withAnimation(.smooth) {
+            showReminder = false
+        }
     }
 
     private func tick() {
@@ -104,7 +110,9 @@ final class ReminderManager: ObservableObject {
     }
 
     private func showReminderNow() {
-        showReminder = true
+        withAnimation(.smooth) {
+            showReminder = true
+        }
 
         let intervalSeconds = max(60, TimeInterval(Defaults[.reminderIntervalMinutes] * 60))
         countdown = intervalSeconds
@@ -115,7 +123,9 @@ final class ReminderManager: ObservableObject {
         autoDismissTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(dismissAfter))
             await MainActor.run {
-                self?.showReminder = false
+                withAnimation(.smooth) {
+                    self?.showReminder = false
+                }
             }
         }
     }

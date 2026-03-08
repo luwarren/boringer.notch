@@ -7,13 +7,28 @@ struct ReminderSettingsView: View {
     @Default(.reminderSchedule) private var schedule
     @Default(.reminderDismissSeconds) private var dismissSeconds
 
-    private let availableIntervals: [Int] = [10, 15, 20, 30, 60]
+    private let availableIntervals: [Int] = [1, 10, 15, 20, 30, 60]
+
+    // Sanitised binding: snaps any invalid stored value to the nearest valid interval
+    private var sanitisedIntervalBinding: Binding<Int> {
+        Binding(
+            get: {
+                availableIntervals.contains(intervalMinutes)
+                    ? intervalMinutes
+                    : (availableIntervals.min(by: { abs($0 - intervalMinutes) < abs($1 - intervalMinutes) }) ?? 60)
+            },
+            set: { newValue in
+                intervalMinutes = newValue
+            }
+        )
+    }
 
     var body: some View {
         Form {
             Section {
                 Toggle("Enable water reminders", isOn: $enabled)
-                Picker("Interval", selection: $intervalMinutes) {
+
+                Picker("Interval", selection: sanitisedIntervalBinding) {
                     ForEach(availableIntervals, id: \.self) { value in
                         Text("\(value) minutes").tag(value)
                     }
@@ -23,12 +38,14 @@ struct ReminderSettingsView: View {
                 HStack {
                     Text("Dismiss after")
                     Spacer()
-                    Slider(value: Binding(
-                        get: { dismissSeconds },
-                        set: { dismissSeconds = max(3.0, min(10.0, $0)) }
-                    ), in: 3...10, step: 1) {
-                        Text("Dismiss after")
-                    }
+                    Slider(
+                        value: Binding(
+                            get: { dismissSeconds },
+                            set: { dismissSeconds = max(3.0, min(10.0, $0)) }
+                        ),
+                        in: 3...10,
+                        step: 1
+                    )
                     Text("\(Int(dismissSeconds))s")
                         .foregroundStyle(.secondary)
                 }
@@ -49,8 +66,15 @@ struct ReminderSettingsView: View {
         }
         .accentColor(.effectiveAccent)
         .navigationTitle("Reminders")
+        // Sanitise on appear: if stored value is invalid, reset to closest valid interval
+        .onAppear {
+            if !availableIntervals.contains(intervalMinutes) {
+                intervalMinutes = availableIntervals.min(by: { abs($0 - intervalMinutes) < abs($1 - intervalMinutes) }) ?? 60
+            }
+        }
     }
 }
+
 
 private struct WeekdayScheduleGrid: View {
     @Binding var schedule: ReminderSchedule

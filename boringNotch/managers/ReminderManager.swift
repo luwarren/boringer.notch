@@ -160,27 +160,14 @@ final class ReminderManager: ObservableObject {
     }
 
     private func isWithinSchedule(_ date: Date) -> Bool {
-        let schedule = Defaults[.reminderSchedule]
-        if schedule.entries.isEmpty {
-            return true
-        }
-
-        let calendar = Calendar.current
-        let weekday = calendar.component(.weekday, from: date)
-        let hour = calendar.component(.hour, from: date)
-        let minute = calendar.component(.minute, from: date)
-
-        for entry in schedule.entries where entry.weekday == weekday {
-            let startTotal = entry.startHour * 60 + entry.startMinute
-            let endTotal = entry.endHour * 60 + entry.endMinute
-            let currentTotal = hour * 60 + minute
-
-            if startTotal <= currentTotal && currentTotal <= endTotal {
-                return true
-            }
-        }
-
-        return false
+        guard Defaults[.reminderScheduleEnabled] else { return true }
+        let cal = Calendar.current
+        let h = cal.component(.hour, from: date)
+        let m = cal.component(.minute, from: date)
+        let current = h * 60 + m
+        let start = Defaults[.reminderScheduleStartHour] * 60 + Defaults[.reminderScheduleStartMinute]
+        let end   = Defaults[.reminderScheduleEndHour]   * 60 + Defaults[.reminderScheduleEndMinute]
+        return start <= current && current <= end
     }
 }
 

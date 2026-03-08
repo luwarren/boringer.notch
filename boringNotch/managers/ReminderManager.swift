@@ -83,6 +83,22 @@ final class ReminderManager: ObservableObject {
             showReminder = false
         }
     }
+    
+    func triggerPreview() {
+        cancelAutoDismiss()
+        withAnimation(.smooth) {
+            showReminder = true
+        }
+        let dismissAfter = Defaults[.reminderDismissSeconds]
+        autoDismissTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(dismissAfter))
+            await MainActor.run {
+                withAnimation(.smooth) {
+                    self?.showReminder = false
+                }
+            }
+        }
+    }
 
     private func tick() {
         guard Defaults[.reminderEnabled] else {

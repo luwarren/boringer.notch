@@ -19,7 +19,7 @@ struct ReminderSettingsView: View {
     @Default(.reminderScheduleEndHour) private var scheduleEndHour
     @Default(.reminderScheduleEndMinute) private var scheduleEndMinute
 
-    private let availableIntervals: [Int] = [1, 10, 15, 20, 30, 60]
+    private let availableIntervals: [Int] = [10, 15, 20, 30, 60]
 
     private var sanitisedIntervalBinding: Binding<Int> {
         Binding(
@@ -101,6 +101,19 @@ struct ReminderSettingsView: View {
 
             } header: {
                 Text("General")
+            }
+
+            Section {
+                Button {
+                    ReminderManager.shared.triggerPreview()
+                } label: {
+                    Label("Send test reminder", systemImage: "drop.fill")
+                }
+                .disabled(!enabled)
+            } footer: {
+                Text("Shows the reminder as it will appear, then auto-dismisses.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Section {
